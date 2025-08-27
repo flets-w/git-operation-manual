@@ -118,26 +118,33 @@ GitHub での運用を安全かつ効率的に進めるため、以下の行動�
 ## 8. 図解
 
 ```mermaid
+
 flowchart TD
-    START[作業ブランチ作成] --> WORK{作業内容の分類}
-    
-    WORK -->|既存の修正・更新<br/>・文言修正<br/>・画像差し替え<br/>・情報更新| UPDATE
-    WORK -->|新規開発<br/>・新ページ追加<br/>・新機能追加| FEATURE
-    WORK -->|不具合修正<br/>・プログラムエラー<br/>・JSエラー| FIX
-    
-    UPDATE[update/]
-    FEATURE[feature/]  
-    FIX[fix/]
-    
-    UPDATE --> UPDATE_EX[例：<br/>update/banner-image<br/>update/news-text-20250820<br/>update/company-info]
-    FEATURE --> FEATURE_EX[例：<br/>feature/add-contact-form<br/>feature/new-product-page<br/>feature/user-registration]
-    FIX --> FIX_EX[例：<br/>fix/header-link-error<br/>fix/form-validation-bug<br/>fix/mobile-display-issue]
-    
-    classDef prefix fill:#e8f5e8,stroke:#4caf50,stroke-width:3px,font-weight:bold
-    classDef example fill:#f5f5f5,stroke:#666,stroke-width:1px
-    classDef decision fill:#fff3e0,stroke:#ff9800,stroke-width:2px
-    
-    class UPDATE,FEATURE,FIX prefix
-    class UPDATE_EX,FEATURE_EX,FIX_EX example
-    class WORK decision
+  %% === 会社ルール準拠：main / dev / 作業ブランチ ===
+  M[main\n常に安定/本番の元]:::core
+  D[dev\n統合(デフォルトブランチ)]:::core
+
+  subgraph 作業ブランチ（必ず dev から作成）
+    U[update/*\n文言・画像差し替え等]:::work
+    F[feature/*\n新規ページ/機能]:::work
+    X[fix/*\n不具合修正]:::work
+  end
+
+  U -->|PR| D
+  F -->|PR| D
+  X -->|PR| D
+
+  D -->|承認後 PR| M
+  M -->|リリース時| T[(tag vX.Y.Z)]
+  M -->|緊急修正| H[hotfix/*]:::hot
+  H -->|PR 承認後| M
+
+  %% サブ環境（手動FTP）の流れ（任意）
+  D -. サブ確認が必要 .-> S[サブ環境へFTP反映\n(手動確認)]
+  S -. 問題なし .-> M
+
+  classDef core fill:#1f77b4,color:#fff,stroke:#0b3d91
+  classDef work fill:#2ca02c,color:#fff
+  classDef hot fill:#d62728,color:#fff
+
 ```
