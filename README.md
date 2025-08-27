@@ -115,36 +115,3 @@ GitHub での運用を安全かつ効率的に進めるため、以下の行動�
   解決したはずのファイルに`<<<<<<<`や`=======`といった Git のマークアップが残っていないか、必ず最終確認を行ってください。不完全な状態のコードをプッシュすると、後続の作業に大きな影響を与えます。
 
 
-## 8. 図解
-
-```mermaid
-
-flowchart TD
-  %% === 会社ルール準拠：main / dev / 作業ブランチ ===
-  M[main\n常に安定/本番の元]:::core
-  D[dev\n統合(デフォルトブランチ)]:::core
-
-  subgraph 作業ブランチ（必ず dev から作成）
-    U[update/*\n文言・画像差し替え等]:::work
-    F[feature/*\n新規ページ/機能]:::work
-    X[fix/*\n不具合修正]:::work
-  end
-
-  U -->|PR| D
-  F -->|PR| D
-  X -->|PR| D
-
-  D -->|承認後 PR| M
-  M -->|リリース時| T[(tag vX.Y.Z)]
-  M -->|緊急修正| H[hotfix/*]:::hot
-  H -->|PR 承認後| M
-
-  %% サブ環境（手動FTP）の流れ（任意）
-  D -. サブ確認が必要 .-> S[サブ環境へFTP反映\n(手動確認)]
-  S -. 問題なし .-> M
-
-  classDef core fill:#1f77b4,color:#fff,stroke:#0b3d91
-  classDef work fill:#2ca02c,color:#fff
-  classDef hot fill:#d62728,color:#fff
-
-```
