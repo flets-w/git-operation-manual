@@ -65,9 +65,9 @@ flowchart TD
     FEATURE[feature/]  
     FIX[fix/]
     
-    UPDATE --> UPDATE_EX[例：<br/>update/banner-image<br/>update/news-text-20250820<br/>update/company-info]
-    FEATURE --> FEATURE_EX[例：<br/>feature/add-contact-form<br/>feature/new-product-page<br/>feature/user-registration]
-    FIX --> FIX_EX[例：<br/>fix/header-link-error<br/>fix/form-validation-bug<br/>fix/mobile-display-issue]
+    UPDATE --> UPDATE_EX[例：<br/>update/NW_FLETS-〇〇_banner-image<br/>update/NW_FLETS-〇〇_news-text-20250820]
+    FEATURE --> FEATURE_EX[例：<br/>feature/NW_FLETS-〇〇_new-product-page<br/>feature/NW_FLETS-〇〇_new-form]
+    FIX --> FIX_EX[例：<br/>fix/NW_FLETS-〇〇_header-link-error<br/>fix/NW_FLETS-〇〇_form-validation-bug]
     
     classDef prefix fill:#e8f5e8,stroke:#4caf50,stroke-width:3px,font-weight:bold
     classDef example fill:#f5f5f5,stroke:#666,stroke-width:1px
