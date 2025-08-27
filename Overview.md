@@ -1,3 +1,5 @@
+## 作業の流れ
+
 ```mermaid
 flowchart TD
 START[作業開始] --> PULL[git pull origin dev]
@@ -46,4 +48,32 @@ PULL --> CONFLICT{コンフリクト発生？}
     style FIXNOTE fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
     style DANGER fill:#fff3e0,stroke:#ff9800,stroke-width:2px
 
+```
+---
+
+## ブランチ命名規則イメージ
+
+```mermaid
+flowchart TD
+    START[作業ブランチ作成] --> WORK{作業内容の分類}
+    
+    WORK -->|既存の修正・更新<br/>・文言修正<br/>・画像差し替え<br/>・情報更新| UPDATE
+    WORK -->|新規開発<br/>・新ページ追加<br/>・新機能追加| FEATURE
+    WORK -->|不具合修正<br/>・プログラムエラー<br/>・JSエラー| FIX
+    
+    UPDATE[update/]
+    FEATURE[feature/]  
+    FIX[fix/]
+    
+    UPDATE --> UPDATE_EX[例：<br/>update/banner-image<br/>update/news-text-20250820<br/>update/company-info]
+    FEATURE --> FEATURE_EX[例：<br/>feature/add-contact-form<br/>feature/new-product-page<br/>feature/user-registration]
+    FIX --> FIX_EX[例：<br/>fix/header-link-error<br/>fix/form-validation-bug<br/>fix/mobile-display-issue]
+    
+    classDef prefix fill:#e8f5e8,stroke:#4caf50,stroke-width:3px,font-weight:bold
+    classDef example fill:#f5f5f5,stroke:#666,stroke-width:1px
+    classDef decision fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    
+    class UPDATE,FEATURE,FIX prefix
+    class UPDATE_EX,FEATURE_EX,FIX_EX example
+    class WORK decision
 ```
