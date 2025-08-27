@@ -116,6 +116,8 @@ GitHub での運用を安全かつ効率的に進めるため、以下の行動�
 
 
 ## 8. 図解
+
+```mermaid
 flowchart TD
     START[作業ブランチ作成] --> WORK{作業内容の分類}
     
@@ -138,3 +140,4 @@ flowchart TD
     class UPDATE,FEATURE,FIX prefix
     class UPDATE_EX,FEATURE_EX,FIX_EX example
     class WORK decision
+```
