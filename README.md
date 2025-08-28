@@ -41,7 +41,7 @@
 <a id="flow"></a>
 ## 2. 作業の流れ（sparse checkout 対応版）
 
-基本的な開発・修正作業は、以下の流れに沿って行ってください。
+基本的な開発・修正作業は、以下の流れに沿って行ってください。<br>
 作業の流れのイメージ図は[こちら](./Overview.md#作業の流れ)
 
 1. **初回セットアップ（リポジトリ取得）**  
@@ -50,6 +50,10 @@
      git clone --filter=blob:none --sparse <REPO_URL>
      cd <REPO_DIR>
      ```
+     > [!TIP]
+     > ここの設定は初回clone時だけでOKです。
+     > 続けて下記を設定してください。
+     
    - **ディレクトリ単位で取得する場合**  
      ```bash
      git sparse-checkout init --cone
@@ -62,6 +66,7 @@
        flets/user/confirm/index.html \
        flets/user/**/*.css
      ```
+     
 
 2. **作業ブランチの準備**  
    - 既に clone 済みの場合、まず最新の `dev` を取得します。  
