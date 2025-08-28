@@ -13,8 +13,17 @@
 
 ```mermaid
 flowchart TD
-START[作業開始] --> PULL[git pull origin dev]
-PULL --> CONFLICT{コンフリクト発生？}
+    START[作業開始] --> INIT{初回クローン？}
+
+    INIT -->|Yes| CLONE[git clone --filter=blob:none --sparse &lt;REPO_URL&gt;<br/>cd &lt;REPO_DIR&gt;]
+    CLONE --> SPARSE{取得単位を選択}
+    SPARSE -->|ディレクトリ| SP_DIR[ディレクトリ単位（初期化）<br/>git sparse-checkout init --cone<br/>git sparse-checkout set user]
+    SPARSE -->|ファイル（例）| SP_FILE[ファイル単位（例）<br/>git sparse-checkout set --no-cone<br/>/user/index.html /user/confirm/index.html /user/**/*.css]
+    SP_DIR --> DEVUP
+    SP_FILE --> DEVUP
+
+    INIT -->|No| DEVUP[git pull origin dev]
+    DEVUP --> CONFLICT{コンフリクト発生？}
 
     CONFLICT -->|Yes| REPORT[チームに即座に報告]
     CONFLICT -->|No| BRANCH[作業ブランチ作成<br/>git checkout -b update/xxx]
@@ -36,7 +45,7 @@ PULL --> CONFLICT{コンフリクト発生？}
 
     RESET --> STATUS
     GITIGNORE --> STATUS
-    ADD --> COMMIT[git commit -m 作業内容]
+    ADD --> COMMIT[git commit -m &quot;作業内容（例）&quot;]
     COMMIT --> PUSH[git push origin branch]
 
     PUSH --> PREXIST{PRは既に存在？}
