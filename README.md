@@ -39,19 +39,67 @@
 
 ---
 <a id="flow"></a>
-## 2. 作業の流れ
+## 2. 作業の流れ（sparse checkout 対応版）
 
-基本的な開発・修正作業は、以下の流れに沿って行ってください。<br>
-作業のイメージ図は[こちら](./Overview.md#作業の流れ)
+基本的な開発・修正作業は、以下の流れに沿って行ってください。
+作業の流れのイメージ図は[こちら](./Overview.md#作業の流れ)
 
-1.  **ブランチの作成:** `dev`ブランチから、後述する命名規則に従って作業ブランチを作成します。（例: `update/top-page-text`）
-2.  **作業とコミット:** 作成したブランチで、コードの修正や追加作業を行います。作業がキリの良いところまで進んだら、変更内容をコミットしてください。
-3.  **Pull Request の作成:** 作業が完了したら、`dev`ブランチに対して Pull Request（PR）を作成します。
-4.  **レビュー:** PR を作成したら、チームの誰かにレビューを依頼します。レビュー担当者はコードを確認し、問題なければ承認（Approve）します。
-5.  **マージ:** 承認が得られたら、PR を作成した本人が`dev`ブランチにマージします。（マージ方法は必ず **Squash and merge** を選択してください）
-6.  **`main`へのマージ準備:** サブ環境での確認が必要な場合は、`dev`から`main`への PR を作成し、責任者の承認を得て`main`にマージします。
-7.  **サブ環境へ反映:** `main`ブランチの最新の内容を、手動でサブ環境（ステージング環境）へ FTP アップロードし、最終確認を行います。
-8.  **本番環境へ反映:** サブ環境での確認で問題がなければ、同じく`main`ブランチの内容を本番環境へアップロードします。
+1. **初回セットアップ（リポジトリ取得）**  
+   - 初めて clone する場合は、容量削減のため sparse checkout を利用してください。  
+     ```bash
+     git clone --filter=blob:none --sparse <REPO_URL>
+     cd <REPO_DIR>
+     ```
+   - **ディレクトリ単位で取得する場合**  
+     ```bash
+     git sparse-checkout init --cone
+     git sparse-checkout set flets/user
+     ```
+   - **ファイル単位で取得する場合（例）**  
+     ```bash
+     git sparse-checkout set --no-cone \
+       flets/user/index.html \
+       flets/user/confirm/index.html \
+       flets/user/**/*.css
+     ```
+
+2. **作業ブランチの準備**  
+   - 既に clone 済みの場合、まず最新の `dev` を取得します。  
+     ```bash
+     git pull origin dev
+     ```
+   - そこから命名規則に従い作業ブランチを作成します。（例: `update/top-page-text`）  
+     ```bash
+     git checkout -b update/xxx
+     ```
+
+3. **作業とコミット**  
+   - ファイルを編集後、必ず `git status` で変更内容を確認してください。  
+   - 不要なファイルが含まれる場合は `git reset` や `.gitignore` を見直して除外します。  
+   - 問題なければコミットします。  
+     ```bash
+     git add .
+     git commit -m "作業内容を明確に記載（例: update banner image）"
+     ```
+
+4. **Push と Pull Request**  
+   - 作業ブランチをリモートへ push します。  
+     ```bash
+     git push origin update/xxx
+     ```
+   - 初回 push の場合は新規 Pull Request を作成、既存 PR がある場合は push した内容が自動的に反映されます。  
+
+5. **レビューと修正対応**  
+   - PR を作成したらレビューを依頼します。  
+   - 修正要求があった場合は同じブランチで修正して push し直してください（PR は取り下げない）。  
+
+6. **マージとクリーンアップ**  
+   - 承認後は **Squash and merge** で `dev` に統合します。  
+   - 作業完了後、不要になった作業ブランチは削除してください。  
+
+7. **サブ環境・本番反映**  
+   - `dev` → `main` の PR を責任者が承認後、`main` をサブ環境に FTP アップロードして確認。  
+   - 問題なければ同じ内容を本番環境へ反映します。  
 
 ---
 <a id="naming"></a>
