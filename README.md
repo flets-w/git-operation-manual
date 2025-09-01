@@ -2,7 +2,7 @@
 
 > [!NOTE]
 > 🔨 運用ルールは編集中です
-<br>
+> <br>
 
 このリポジトリは、チームで GitHub を安全かつ効率的に運用するためのドキュメントを管理することを目的としています。全員がこのドキュメントを参照し、以下のルールを必ず遵守してください。<br>
 イメージ図を[こちら](./Overview.md)でまとめていますので併せてご活用ください。
@@ -10,6 +10,7 @@
 <br>
 
 ## 目次
+
 - [ブランチ戦略](#branch)
 - [作業の流れ](#flow)
 - [命名規則](#naming)
@@ -17,12 +18,17 @@
 - [サブ環境について](#staging)
 - [やってはいけないこと（禁止事項）](#forbidden)
 - [コンフリクト解決時の禁止事項](#conflict)
-<br>
-<br>
+- [リリース後の同期（main → dev）](#sync)
+- [履歴の考え方（Squash 運用の特徴）](#history)
+  <br>
+  <br>
 
 ---
+
 <a id="branch"></a>
+
 ## 1. ブランチ戦略
+
 <details>
 <summary>&nbsp;</summary>
 
@@ -45,9 +51,10 @@
 
 </details>
 
-
 ---
+
 <a id="flow"></a>
+
 ## 2. 作業の流れ
 
 <details>
@@ -56,80 +63,90 @@
 基本的な開発・修正作業は、以下の流れに沿って行ってください。<br>
 作業の流れのイメージ図は[こちら](./Overview.md#作業の流れ)
 
-1. **初回セットアップ（リポジトリ取得）**  
-   - 初めて clone する場合は、容量削減のため sparse checkout を利用してください。  
+1. **初回セットアップ（リポジトリ取得）**
+
+   - 初めて clone する場合は、容量削減のため sparse checkout を利用してください。
+
      ```bash
      git clone --filter=blob:none --sparse <REPO_URL>
      cd <REPO_DIR>
      ```
+
      <br>
 
      > 💡 **TIP:** 上記の設定は初回 clone 時だけで OK です。続けて下記を設定してください。
-     
+
      <br>
-     
-   - **ディレクトリ単位で取得する場合**  
+
+   - **ディレクトリ単位で取得する場合**
      ```bash
      git sparse-checkout init --cone
      git sparse-checkout set flets/user
      ```
-   - **ファイル単位で取得する場合（例）**  
+   - **ファイル単位で取得する場合（例）**
      ```bash
      git sparse-checkout set --no-cone \
        flets/user/index.html \
        flets/user/confirm/index.html \
        flets/user/**/*.css
      ```
-     
 
-2. **作業ブランチの準備**  
-   - 既に clone 済みの場合、まず最新の `dev` を取得します。  
+2. **作業ブランチの準備**
+
+   - 既に clone 済みの場合、まず最新の `dev` を取得します。
      ```bash
      git pull origin dev
      ```
-   - そこから命名規則に従い作業ブランチを作成します。（例: `update/top-page-text`）  
+   - そこから命名規則に従い作業ブランチを作成します。（例: `update/top-page-text`）
      ```bash
      git checkout -b update/xxx
      ```
 
-3. **作業とコミット**  
-   - ファイルを編集後、必ず `git status` で変更内容を確認してください。  
-   - 不要なファイルが含まれる場合は `git reset` や `.gitignore` を見直して除外します。  
-   - 問題なければコミットします。  
+3. **作業とコミット**
+
+   - ファイルを編集後、必ず `git status` で変更内容を確認してください。
+   - 不要なファイルが含まれる場合は `git reset` や `.gitignore` を見直して除外します。
+   - 問題なければコミットします。
      ```bash
      git add .
      git commit -m "作業内容を明確に記載（例: update banner image）"
      ```
 
-4. **Push と Pull Request**  
-   - 作業ブランチをリモートへ push します。  
+4. **Push と Pull Request**
+
+   - 作業ブランチをリモートへ push します。
      ```bash
      git push origin update/xxx
      ```
-   - 初回 push の場合は新規 Pull Request を作成、既存 PR がある場合は push した内容が自動的に反映されます。  
+   - 初回 push の場合は新規 Pull Request を作成、既存 PR がある場合は push した内容が自動的に反映されます。
 
-5. **レビューと修正対応**  
-   - PR を作成したらレビューを依頼します。  
-   - 修正要求があった場合は同じブランチで修正して push し直してください（PR は取り下げない）。  
+5. **レビューと修正対応**
 
-6. **マージとクリーンアップ**  
-   - 承認後は **Squash and merge** で `dev` に統合します。  
-   - 作業完了後、不要になった作業ブランチは削除してください。  
+   - PR を作成したらレビューを依頼します。
+   - 修正要求があった場合は同じブランチで修正して push し直してください（PR は取り下げない）。
 
-7. **サブ環境・本番反映**  
-   - `dev` → `main` の PR を責任者が承認後、`main` をサブ環境に FTP アップロードして確認。  
+6. **マージとクリーンアップ**
+
+   - 承認後は **Squash and merge** で `dev` に統合します。
+   - 作業完了後、不要になった作業ブランチは削除してください。
+
+7. **サブ環境・本番反映**
+
+   - `dev` → `main` の PR を責任者が承認後、`main` をサブ環境に FTP アップロードして確認。
    - 問題なければ同じ内容を本番環境へ反映します。
 
    <br>
 
-　 ⚠️ **注意:** ここの運用は要相談
+⚠️ **注意:** ここの運用は要相談
 
   <br>
   
 </details>
 
 ---
+
 <a id="naming"></a>
+
 ## 3. 命名規則
 
 <details>
@@ -155,7 +172,9 @@
 </details>
 
 ---
+
 <a id="pr-review"></a>
+
 ## 4. Pull Request (プルリクエスト) とレビューのルール
 
 <details>
@@ -165,11 +184,13 @@
 - 全ての Pull Request は、作成者以外の**最低 1 名の承認（Approve）**がなければマージできません。（このルール設定は無料版では不可なので、将来的に設定します）
 - レビューで指摘された点（Conversation）は、全て解決済み（Resolved）にしてください。
 - マージの際は、必ず **Squash and merge** を選択してください。これにより、`dev`や`main`の履歴がクリーンに保たれます。
-  
+
 </details>
 
 ---
+
 <a id="staging"></a>
+
 ## 5. サブ環境について
 
 <details>
@@ -180,7 +201,9 @@
 </details>
 
 ---
+
 <a id="forbidden"></a>
+
 ## 6. ⚠️ やってはいけないこと（禁止事項）
 
 <details>
@@ -210,7 +233,9 @@ GitHub での運用を安全かつ効率的に進めるため、以下の行動�
 </details>
 
 ---
+
 <a id="conflict"></a>
+
 ## 7. ⚠️ コンフリクト解決時の禁止事項
 
 <details>
@@ -230,3 +255,59 @@ GitHub での運用を安全かつ効率的に進めるため、以下の行動�
 
 </details>
 
+---
+
+<a id="sync"></a>
+
+## 8. リリース後の同期（main → dev）
+
+<details>
+<summary>&nbsp;</summary>
+
+- `dev → main` のリリースは、必ず **Squash and merge** を使用します。
+- リリース直後には必ず **main → dev の同期 PR** を作成し、履歴の整合を取ってください。
+
+### 手順
+
+1. GitHub 上で PR を作成
+
+   - base: `dev`
+   - compare: `main`
+   - タイトル例: `chore: sync dev with main after release`
+   - マージ方式は **Merge commit** を使用（Squash は不可）
+
+2. マージ完了後、各自ローカルを最新化すること
+   ```bash
+   git fetch origin --prune
+   git switch main && git pull origin main
+   git switch dev  && git pull origin dev
+   ```
+
+### 注意
+
+- Squash 運用では main と dev の履歴に必ず差分が発生します。
+- これは正常な挙動であり問題ありません。
+- 上記の同期 PR を行うことで、次回以降の作業に影響しないよう整合が取れます。
+
+</details>
+
+---
+
+<a id="history"></a>
+
+## 9. 履歴の考え方（Squash 運用の特徴）
+
+<details>
+<summary>&nbsp;</summary>
+
+### main ブランチ
+
+- 「1PR = 1 コミット」で履歴が整理され、非常にシンプルです。
+- リリースノート作成や障害対応時の切り戻しに利用します。
+
+### dev ブランチ
+
+- 作業ブランチの細かいコミットや Revert がそのまま残ります。
+- 開発の経過や詳細な作業履歴を追う際に利用します。
+
+</details>
