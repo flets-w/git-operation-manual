@@ -59,17 +59,37 @@ flowchart TD
 
     REVIEW --> REVIEWRESULT{レビュー結果}
     REVIEWRESULT -->|修正要求| FIXNOTE[修正要求対応<br/>PRは取り下げない]
-    REVIEWRESULT -->|承認| MERGE[Squash and merge]
+    REVIEWRESULT -->|承認| MERGE[Squash and merge でdev統合]
 
     FIXNOTE --> WORK
-    MERGE --> CLEANUP[ブランチ削除]
-    CLEANUP --> END[作業完了]
+    MERGE --> CLEANUP[作業ブランチ削除]
+    CLEANUP --> WORKEND[個人作業完了]
 
+    %% リリースの流れ
+    WORKEND --> RELEASE_READY{リリース準備完了？}
+    RELEASE_READY -->|まだ| WORKEND
+    RELEASE_READY -->|Yes| RELEASE_PR[dev → main のPR作成<br/>責任者がレビュー・承認]
+
+    RELEASE_PR --> RELEASE_MERGE[Squash and merge で本番反映]
+    RELEASE_MERGE --> FTP_UPLOAD[main を手動FTPでサブ環境確認]
+    FTP_UPLOAD --> PROD_OK{本番反映OK？}
+
+    PROD_OK -->|問題あり| HOTFIX[緊急修正対応]
+    PROD_OK -->|OK| SYNC_PR[★リリース後同期作業★<br/>本番反映後の開発ブランチ同期]
+
+    HOTFIX --> FTP_UPLOAD
+    SYNC_PR --> SYNC_CREATE[GitHub で PR作成<br/>base: dev, compare: main<br/>Merge commit で統合（Squash不可）]
+    SYNC_CREATE --> LOCAL_UPDATE[各自ローカル最新化<br/>git fetch origin --prune<br/>git switch main && git pull origin main<br/>git switch dev && git pull origin dev]
+    LOCAL_UPDATE --> END[運用サイクル完了]
+
+    %% スタイル定義
     style REPORT fill:#ffebee,stroke:#f44336,stroke-width:2px
     style COLLABORATE fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
     style FIXNOTE fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
     style DANGER fill:#fff3e0,stroke:#ff9800,stroke-width:2px
-
+    style SYNC_PR fill:#f3e5f5,stroke:#9c27b0,stroke-width:3px
+    style RELEASE_PR fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style LOCAL_UPDATE fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
 ```
 ---
 <a id="name"></a>
